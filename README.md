@@ -1,4 +1,4 @@
-# Translator API Automated Tests
+# Translator API – Automated Tests
 
 This repository contains an automated test project for a mocked Translator API, implemented using modern QA/testing technologies:
 
@@ -16,7 +16,7 @@ The goal of this project is to demonstrate how to design, automate, and document
 
 We need to test the following endpoint (simulated via WireMock):
 
-`GET http://localhost:8080?query=apple&locale=es-ES`
+`GET http://localhost:8080/?query=apple&locale=es-ES`
 
 Expected response:
 
@@ -26,7 +26,7 @@ Additional scenarios include empty queries and unsupported locales.
 
 ## Project Structure
 ```
-translator-tests/
+translator-api-tests/
 │── build.gradle                  # Gradle dependencies & build configuration
 │── settings.gradle               # Gradle project name
 │── README.md                     # Project documentation
@@ -42,7 +42,7 @@ translator-tests/
         │
         └── resources/
             ├── features/
-            │   ├── translator_api.feature    # Translation and business logic scenarios
+            │   ├── translator.feature        # Translation and business logic scenarios
             │   └── error_responses.feature   # HTTP status code scenarios
             │
             ├── mappings/                     # WireMock endpoint stubs
@@ -79,8 +79,9 @@ Feature: Translator API
 These map Gherkin steps to Java code, using:
 RestAssured to make API calls.
 WireMock to simulate backend responses.
-TranslatorStepDefs.java → handles translation and business logic responses (e.g. 200 OK, invalid query).
-HttpStatusStepDefs.java → handles status code validation (302, 403, 404, 500).
+- REST Assured → make API calls
+- WireMock → simulate backend responses
+
 
 ### 3. Hooks (Hooks.java)
 Initializes and manages a single shared instance of WireMock server.
@@ -94,7 +95,7 @@ public class RunCucumberTest {
 }
 ```
 
-### 4. WireMock Mappings (mappings/*.json)
+### 5. WireMock Mappings (mappings/*.json)
 Define API responses without requiring a real backend.
 
 Example:
@@ -115,8 +116,8 @@ Example:
   }
 }
 ```
-### 5. WireMock Mappings (src/test/resources/mappings/)
-SON files defining mocked API endpoints and their responses.
+### 6. WireMock Mappings (src/test/resources/mappings/)
+JSON files defining mocked API endpoints and their responses.
 This allows testing without a real backend.
 
 Example (apple-200.json):
@@ -167,9 +168,9 @@ Linux/Mac:
 ## Test Reports
 After execution, reports will be generated:
 
-- Cucumber HTML Report(./build/reports/cucumber-report.html)
-- Cucumber JSON Report(./build/reports/cucumber-report.json)
-- JUnit Report (Gradle)(./build/reports/tests/test/index.html)
+- Cucumber HTML Report (./build/reports/cucumber-report.html)
+- Cucumber JSON Report (./build/reports/cucumber-report.json)
+- JUnit Report (Gradle) (./build/reports/tests/test/index.html)
 
 Note: Links work only after running tests locally.
 
@@ -181,11 +182,18 @@ Reports example:
 - Gradle → build automation tool
 - JUnit 5 → testing framework
 - Cucumber (BDD) → human-readable test cases in Gherkin
-- RestAssured → API testing library
+- REST Assured → API testing library
 - WireMock → mock HTTP server
 - SLF4J + Simple Logger → logging
 
 ## Example Scenario Executions
-- Translate apple to Spanish → Response: manzana
-- Empty query → Response: invalid query
-- Unsupported locale → Response: unsupported locale
+### Successful and Business Logic Responses
+- Translate "apple" to Spanish (`es-ES`) → **Response body:** `manzana`
+- Translate empty query (`""`) → **Response body:** `invalid query`
+- Translate "apple" with unsupported locale (`xx-XX`) → **Response body:** `unsupported locale`
+
+### Error Handling (HTTP Status Codes)
+- Translate "banana" to Spanish → **Response status:** `302 Found`
+- Translate "restricted" to Spanish → **Response status:** `403 Forbidden`
+- Translate "unknown" to Spanish → **Response status:** `404 Not Found`
+- Translate "error" to Spanish → **Response status:** `500 Internal Server Error`
