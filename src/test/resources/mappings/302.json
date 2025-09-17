@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "banana" },
+      "locale": { "equalTo": "es-ES" }
+    }
+  },
+  "response": {
+    "status": 302,
+    "headers": { "Location": "/redirect-target" }
+  }
+}

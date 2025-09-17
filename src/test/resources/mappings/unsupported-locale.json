@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "apple" },
+      "locale": { "equalTo": "xx-XX" }
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "unsupported locale"
+  }
+}

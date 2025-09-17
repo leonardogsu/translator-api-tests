@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "restricted" },
+      "locale": { "equalTo": "es-ES" }
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": "Forbidden"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "" },
+      "locale": { "equalTo": "es-ES" }
+    }
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "invalid query"
+  }
+}

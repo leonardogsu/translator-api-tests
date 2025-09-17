@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "apple" },
+      "locale": { "equalTo": "es-ES" }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/plain"
+    },
+    "body": "manzana"
+  }
+}

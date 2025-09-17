@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/",
+    "queryParameters": {
+      "query": { "equalTo": "error" },
+      "locale": { "equalTo": "es-ES" }
+    }
+  },
+  "response": {
+    "status": 500,
+    "body": "Internal Server Error"
+  }
+}
