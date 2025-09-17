@@ -27,24 +27,33 @@ Additional scenarios include empty queries and unsupported locales.
 ## Project Structure
 ```
 translator-tests/
-│── build.gradle                 # Gradle dependencies & build configuration
-│── settings.gradle              # Gradle project name
-│── README.md                    # Project documentation (this file)
+│── build.gradle                  # Gradle dependencies & build configuration
+│── settings.gradle               # Gradle project name
+│── README.md                     # Project documentation
 │
 └── src/
     └── test/
         ├── java/
         │   └── stepdefs/
-        │       ├── TranslatorStepDefs.java   # Step definitions (test logic)
+        │       ├── Hooks.java                # Starts WireMock once
+        │       ├── TranslatorStepDefs.java   # Step definitions (valid translations)
+        │       ├── HttpStatusStepDefs.java   # Step definitions (HTTP status codes)
         │       └── RunCucumberTest.java      # Test runner (entry point)
+        │
         └── resources/
-            ├── stepdefs/
-            │   └── translator.feature        # Test scenarios in Gherkin
-            ├── mappings/                     # WireMock endpoint mocks
-            │   ├── apple-to-spanish.json
-            │   ├── empty-query.json
-            │   └── unsupported-locale.json
+            ├── features/
+            │   ├── translator_api.feature    # Translation and business logic scenarios
+            │   └── error_responses.feature   # HTTP status code scenarios
+            │
+            ├── mappings/                     # WireMock endpoint stubs
+            │   ├── 200.json
+            │   ├── 302.json
+            │   ├── 403.json
+            │   ├── 404.json
+            │   └── 500.json
+            │
             └── junit-platform.properties     # Cucumber runtime configuration
+
 ```
 
 ## Explanation of Components
@@ -54,18 +63,30 @@ Defines test scenarios in plain English:
 
 ```
 Feature: Translator API
+  In order to validate translation behavior
+  As a tester
+  I want to check successful translations and business errors
+
+  Background:
+    Given the translator API is running
 
   Scenario: Translate apple to Spanish
-    Given the translator API is running
     When I translate "apple" to "es-ES"
     Then the response should be "manzana"
 ```
 
-### 2. Step Definitions (TranslatorStepDefs.java)
-Maps Gherkin steps to Java code.  
-Uses RestAssured to call the API and WireMock to mock responses.
+### 2. Step Definitions (src/test/java/stepdefs/)
+These map Gherkin steps to Java code, using:
+RestAssured to make API calls.
+WireMock to simulate backend responses.
+TranslatorStepDefs.java → handles translation and business logic responses (e.g. 200 OK, invalid query).
+HttpStatusStepDefs.java → handles status code validation (302, 403, 404, 500).
 
-### 3. Runner Class (RunCucumberTest.java)
+### 3. Hooks (Hooks.java)
+Initializes and manages a single shared instance of WireMock server.
+Prevents multiple bindings to port 8080 when running multiple features.
+
+### 4. Runner Class (RunCucumberTest.java)
 Minimal entry point for executing `.feature` files as tests:
 ```java
 @Cucumber
@@ -94,8 +115,29 @@ Example:
   }
 }
 ```
+### 5. WireMock Mappings (src/test/resources/mappings/)
+SON files defining mocked API endpoints and their responses.
+This allows testing without a real backend.
 
-### 5. junit-platform.properties
+Example (apple-200.json):
+```
+{
+"request": {
+"method": "GET",
+"urlPath": "/",
+"queryParameters": {
+"query": { "equalTo": "apple" },
+"locale": { "equalTo": "es-ES" }
+}
+},
+"response": {
+"status": 200,
+"headers": { "Content-Type": "text/plain" },
+"body": "manzana"
+}
+}
+```
+### 6. junit-platform.properties
 Configures Cucumber runtime:
 ```
 cucumber.glue=stepdefs
@@ -106,8 +148,8 @@ cucumber.plugin=pretty, html:build/reports/cucumber-report.html, json:build/repo
 
 1. Clone the repository
 ```
-git clone https://github.com/<your-username>/translator-tests.git
-cd translator-tests
+git clone https://github.com/leonardogsu/translator-api-tests.git
+cd translator-api-tests
 ```
 
 2. Run tests with Gradle
@@ -125,9 +167,9 @@ Linux/Mac:
 ## Test Reports
 After execution, reports will be generated:
 
-- [Cucumber HTML Report](./build/reports/cucumber-report.html)
-- [Cucumber JSON Report](./build/reports/cucumber-report.json)
-- [JUnit Report (Gradle)](./build/reports/tests/test/index.html)
+- Cucumber HTML Report(./build/reports/cucumber-report.html)
+- Cucumber JSON Report(./build/reports/cucumber-report.json)
+- JUnit Report (Gradle)(./build/reports/tests/test/index.html)
 
 Note: Links work only after running tests locally.
 
@@ -144,9 +186,3 @@ Note: Links work only after running tests locally.
 - Translate apple to Spanish → Response: manzana
 - Empty query → Response: invalid query
 - Unsupported locale → Response: unsupported locale
-
-## Why this project?
-- Demonstrates clean automation architecture.
-- Uses BDD for readability across technical and non-technical users.
-- Employs mocking to avoid dependency on real APIs.
-- Generates reports for HR, QA, and developers.  
