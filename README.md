@@ -1,6 +1,6 @@
 # Translator API – Automated Tests
 
-This repository contains an automated test project for a mocked Translator API, implemented using modern QA/testing technologies:
+This repository contains an automated test project for a mocked Translator API, implemented using QA/testing technologies:
 
 - Java 17
 - Gradle as the build system
