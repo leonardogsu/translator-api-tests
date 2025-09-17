@@ -173,6 +173,9 @@ After execution, reports will be generated:
 
 Note: Links work only after running tests locally.
 
+Reports example:
+![Reports example](img/results.png)
+
 ## Technologies Used
 - Java 17 → programming language
 - Gradle → build automation tool
