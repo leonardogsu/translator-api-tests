@@ -10,11 +10,16 @@ public class Hooks {
 
     @Before(order = 0)
     public void setupMockServer() {
-        if (wireMockServer == null || !wireMockServer.isRunning()) {
-            wireMockServer = new WireMockServer(
-                    options().port(8080).usingFilesUnderDirectory("src/test/resources")
-            );
-            wireMockServer.start();
+        if (Config.isMockEnabled()) {
+            if (wireMockServer == null || !wireMockServer.isRunning()) {
+                wireMockServer = new WireMockServer(
+                        options().port(8080).usingFilesUnderDirectory("src/test/resources")
+                );
+                wireMockServer.start();
+                System.out.println("✅ WireMock iniciado en puerto 8080");
+            }
+        } else {
+            System.out.println("➡️ Usando endpoint real: " + Config.getBaseUri());
         }
     }
 }

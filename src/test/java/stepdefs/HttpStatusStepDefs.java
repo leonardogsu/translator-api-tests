@@ -14,7 +14,7 @@ public class HttpStatusStepDefs {
     @When("I request translation of {string} to {string}")
     public void iRequestTranslationWithStatus(String query, String locale) {
         response = given()
-                .baseUri("http://localhost:8080")
+                .baseUri(Config.getBaseUri())
                 .redirects().follow(false)   // importante para 302
                 .queryParam("query", query)
                 .queryParam("locale", locale)

@@ -27,15 +27,19 @@ dependencies {
 testing {
     suites {
         test {
-            useJUnitJupiter() // activa JUnit 5
+            useJUnitJupiter()
         }
     }
 }
 
 tasks.test {
+    useJUnitPlatform()
+
+    // Propiedades para elegir mock/real
+    systemProperty "useMock", System.getProperty("useMock", "true")
+    systemProperty "realUrl", System.getProperty("realUrl") // opcional, sobreescribe config.properties
 
     doLast {
-
         def cucumberReport = layout.buildDirectory.file("reports/cucumber-report.html").get().asFile
         def junitReport = layout.buildDirectory.file("reports/tests/test/index.html").get().asFile
 

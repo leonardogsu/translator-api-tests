@@ -13,13 +13,14 @@ public class TranslatorStepDefs {
 
     @Given("the translator API is running")
     public void theTranslatorApiIsRunning() {
-        // WireMock is started by Hooks.java
+        // Si es mock, lo arranca Hooks
+        // Si es real, asumimos que ya está disponible
     }
 
     @When("I translate {string} to {string}")
     public void iTranslateTo(String query, String locale) {
         response = given()
-                .baseUri("http://localhost:8080")
+                .baseUri(Config.getBaseUri())
                 .queryParam("query", query)
                 .queryParam("locale", locale)
                 .when()
